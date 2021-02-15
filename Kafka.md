@@ -10,33 +10,52 @@
 
 # Kafka
 
-> 中文文档：[Kafka 中文文档 - ApacheCN](https://kafka.apachecn.org/)
+> 中文文档：[Kafka 中文文档 - ApacheCN](https://Kafka.apachecn.org/)
 >
-> Kafka是最初由Linkedin公司开发的一个基于zookeeper协调的分布式消息系统，并于2010年贡献给了Apache基金会并成为顶级开源项目
+> Kafka是最初由Linkedin公司开发的一个基于Zookeeper协调的分布式消息系统，并于2010年贡献给了Apache基金会并成为顶级开源项目
 >
 > Apache Kafka® 是 *一个分布式流处理平台
+>
+> Kafka受到Zookeeper的管理，要运行Kafka需要首先安装Zookeeper
+
+## 基本概念
 
 >- Kafka作为一个集群，运行在一台或者多台服务器上.        
 >- Kafka 通过 *topic* 对存储的流数据进行分类。        
 >- 每条记录中包含一个key，一个value和一个timestamp（时间戳）。
 
-> 消费者根据topic订阅消息，生产者在一个topic上发送的消息会被所有订阅这个topic的消费者收到。每个topic都具有许多分区，分区中的记录通过偏移量(offset)来区分，记录具有一个保留期限，超过期限的记录会被丢弃
+Producer：生产者，发送消息
 
----
+Consumer：消费者，消费消息
 
-## zookeeper
+ConsumerGroup：消费者组，一个消费者组下的消费者可以并行消费一个topic下的消息
 
- zookeeper是一个分布式的应用程序协调服务
+Broker：缓存代理，指Kafka集群中的一台或多台服务器节点
 
-## 优势
+topic：消息的分类
+
+partition：分区，每个toipc有许多分区，一个分区中的消息是有序的队列，用offset作为id
+
+offset：消息在分区中的偏移量
+
+> 消费者根据topic订阅消息，生产者在一个topic上发送的消息会被所有订阅这个topic的消费者收到。每个topic都具有许多分区(partition)，分区中的记录通过偏移量(offset)来区分，记录具有一个保留期限，超过期限的记录会被丢弃
+
+## Zookeeper
+
+Zookeeper是一个分布式的应用程序协调服务
+
+## Kafka的优势
 
  - 高吞吐量，低延迟，支持高并发
+
+   写的性能体现在以O(1)的时间复杂度进行顺序写入。读的性能体现在以O(1)的时间复杂度进行顺序读取， 对topic进行partition分区，消费者组中的消费者线程可以以很高能性能进行顺序读。
+
  - 集群可扩展
- - 数据持久化到磁盘，持久性，可靠性
+ - 数据持久化到磁盘，持久性，可靠性。如果正常终止，数据不会丢失；如果不正常终止，可能会使页面缓存来不及写入磁盘导致消息丢失，可以配置flush的周期来设置写磁盘的频率。
 
 ## 分区
 
- 相比传统的消息队列，kafka具有更严格的顺序保证。
+ 相比传统的消息队列，Kafka具有更严格的顺序保证，每个分区中的消息都是按顺序存放的。
 
  **传统消息队列**
 
@@ -44,30 +63,45 @@
 
  而如果想要按顺序执行的话，只能使用唯一的一个消费者，无法并行处理。
 
- **kafka**
+ **Kafka**
 
- kafka的设计中，每个topic都具有一些并行的*分区(partition)*，将分区分配给消费者组中的消费者，每个分区都对应一个消费者，这保证了分区中的消息按照顺序处理，多个分区保证了负载均衡。
+ Kafka的设计中，每个topic都具有一些并行的*分区(partition)*，将分区分配给消费者组中的消费者，每个分区都对应一个消费者，这保证了分区中的消息按照顺序处理，多个分区保证了负载均衡。
 
 ## **集群**
 
 > 使用集群进行跨服务器的负载均衡，避免单节点宕机造成服务停止或数据丢失。提高可用性
 
-**Broker**
+- Kafka集群中的Broker之间的地位是一样的，不是主从关系，可以随意增加删除节点
 
-每个Broker即是一个Kafka服务实例，多个Broker构成一个Kafka集群
+### Kafka Broker Leader
 
+通过Zookeeper管理集群
 
+所有的Kafka Broker节点一起去Zookeeper上注册一个临时节点，只有一个Kafka  Broker节点会注册成功，其他的都会失败；这个成功注册的节点称为Kafka  Broker Controller，其他的Kafka Broker叫做Kafka Broker  Follower，这个过程叫controller在Zookeeper注册Watch。这个Controller会监听其他的Kafka  Broker的所有信息。
 
-## python-kafka
+如果这个Kafka Broker  Controller宕机了，在Zookeeper上面的那个临时节点就会消失，此时所有的Kafka  Broker又会一起去Zookeeper上注册一个临时节点，重新分配Controller和Follower。
 
-[kafka-python · PyPI](https://pypi.org/project/kafka-python/)
+### 集群配置
+
+````
+broker.id=0 # 参数默认值为0，设置三个kafka的配置文件分别为0,1,2
+listeners=PLAINTEXT://localhost:9092 # 设置域名和端口，默认是9092
+````
+
+在同一台机器上测试的话，需要修改端口为9092,9093,9094
+
+打开Kafka Tool可以发现连接了三个Broker
+
+## python-Kafka
+
+[Kafka-python · PyPI](https://pypi.org/project/Kafka-python/)
 
 默认发送的是byte类型数据
 
 ```producer.py```
 
 ```python
-from kafka import KafkaProducer
+from Kafka import KafkaProducer
 import time
 
 producer = KafkaProducer(bootstrap_servers='localhost:9092')
@@ -80,7 +114,7 @@ for i in range(0, 100):
 ```consumer.py```
 
 ```python
-from kafka import KafkaConsumer
+from Kafka import KafkaConsumer
 
 consumer = KafkaConsumer('topic')
 for msg in consumer:
@@ -98,7 +132,7 @@ for msg in consumer:
 ```producer.py```
 
 ```python
-from kafka import KafkaProducer
+from Kafka import KafkaProducer
 import time
 
 producer = KafkaProducer(bootstrap_servers='localhost:9092', key_serializer=str.encode, value_serializer=str.encode)
@@ -113,7 +147,7 @@ for i in range(0, 100):
 ```consumer.py```
 
 ```python
-from kafka import KafkaConsumer
+from Kafka import KafkaConsumer
 
 consumer = KafkaConsumer('topic',key_deserializer=lambda v: bytes.decode(v), value_deserializer=lambda v: bytes.decode(v))
 for msg in consumer:
@@ -127,7 +161,7 @@ for msg in consumer:
 ```producer.py```
 
 ```python
-from kafka import KafkaProducer
+from Kafka import KafkaProducer
 import time
 import json
 
@@ -145,7 +179,7 @@ for i in range(0, 100):
 ```consumer.py```
 
 ```python
-from kafka import KafkaConsumer
+from Kafka import KafkaConsumer
 import json
 
 consumer = KafkaConsumer('topic', key_deserializer=lambda v: bytes.decode(v), value_deserializer=lambda v: json.loads(v))
