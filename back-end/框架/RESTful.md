@@ -74,6 +74,8 @@ RESTful是一种开发理念，每个URL代表一种资源
 - 用请求的类型表示操作类型
 - 用params表示过滤数据的条件
 - URL中使用名词，大多为复数，不能使用动词词组
+- URL请求采用小写字母，数字，部分特殊符号（非制表符）组成。
+- URL请求中不采用大小写混合的驼峰命名方式，尽量采用全小写单词，如果需要连接多个单词，则采用连接符“_”连接单词
 
 例如获取id为1234的用户数据，使用GET
 
@@ -98,9 +100,9 @@ GET http://localhost:5000/users/1234/articles/0001
 接收：
 
  ```python
- @app.route('/users/<string:uid>/articles/<string:aid>')
- def get_user(uid, aid):
-# ...
+@app.route('/users/<string:uid>/articles/<string:aid>')
+def get_user(uid, aid):
+    # ...
  ```
 
 如果两个资源类型属于平行关系，或者说属于检索过滤的操作，使用params传参，例如某个id为```1234```的用户发表的标题为 ```t```，年份为```y```的文章：
@@ -159,10 +161,10 @@ if __name__ == '__main__':
 例如用户注册，需要发送用户的数据，假设只有用户名和密码（加密过的）
 
 ```http
-POST http://localhost:5000/users/register
+POST http://localhost:5000/users
 ```
 
-发送JSON格式数据，写在body里面
+发送``JSON``格式数据，写在body里面
 
 ```json
 {
@@ -174,7 +176,7 @@ POST http://localhost:5000/users/register
 flask
 
 ```python
-@app.route('/users/register', methods=['post'])
+@app.route('/users', methods=['post'])
 def user_register():
     username = request.json.get('username')
     password = request.json.get('password')
@@ -193,7 +195,7 @@ def user_register():
 flask
 
 ```python
-@app.route('/users/register', methods=['post'])
+@app.route('/users', methods=['post'])
 def user_register():
     username = request.form.get('username')
     password = request.form.get('password')
