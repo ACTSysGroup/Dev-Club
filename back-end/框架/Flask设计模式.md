@@ -1,18 +1,28 @@
 # Web框架的设计模式
 
-## Flask
-
->Flask适合开发者用最快的速度做一个简单的，Python做后端的网站。
->
->它适合一些一次性的工具，或者一些基于 现有API的简单web应用。
->
->需要实现一个简单的Web接口时，Flask可以开发的很快。例如想要将Python开发的深度学习算法对外开放Web api，使用Flask会比较方便。
-
 ## 设计模式
 
 https://www.runoob.com/design-pattern/design-pattern-tutorial.html
 
 设计模式是在构件设计阶段，通过定义类或特定对象之间的结构和行为，从而解决每类设计问题的通用解决方案
+
+是一套被反复使用、多数人知道的、经过分类编目的、代码设计经验的总结。从定义上看，它涉及到了代码级别，侧重于解决实际的现实的问题，是对代码开发经验的总结
+
+总体来说设计模式分为：
+
+- 创建型模式：包括工厂方法模式、抽象工厂模式、单例模式、建造者模式、原型模式。
+
+- 结构型模式：包括适配器模式、装饰器模式、代理模式、外观模式、桥接模式、组合模式、享元模式。
+
+- 行为型模式：包括策略模式、模板方法模式、观察者模式、迭代子模式、责任链模式、命令模式、备忘录模式、状态模式、访问者模式、中介者模式、解释器模式。
+
+还有并发型模式和线程池模式
+
+---
+
+设计模式之间的关系
+
+<img src=".\images\设计模式.png" alt="设计模式" style="zoom:80%;" />
 
 ### 设计模式的原则
 
@@ -25,15 +35,37 @@ https://www.runoob.com/design-pattern/design-pattern-tutorial.html
 
 ### MVC
 
-是最常用的设计模式，适用于分层架构，将应用程序分为模型、视图、控制器三层
+>MVC不是框架，不是设计模式，更不是架构，而是一种架构模式。它不描述系统架构，也不指定使用什么技术，仅仅是描述系统架构的一种模式
+
+是最常用的架构模式，适用于分层架构，将应用程序分为模型、视图、控制器三层
 
 - 模型 (Model) : 存取数据的对象
 - 视图 (View) : 用户界面，将控制器返回的数据显示在用户界面上
 - 控制器 (Controller) : 作用于模型和视图之间，根据用户的操作调用模型进行操作或获取数据，返回给视图
 
+### 前后端分离
 
+最开始，MVC是后端的一种设计模式。绝大部分后端服务器，都做一件事情：接收用户发来的请求，返回一段响应内容。根据不同的URL，Router调用不同的Controller来处理。Router的作用就是让每个URL都有一段代码来负责响应
+
+现在最常用的开发方式是前后端分离，将浏览器视为前端，而服务器视为后端，使用RESTful API进行交互，后端只需要关注api的实现 
+
+|            | 前端                                              | 后端                                       |
+| ---------- | ------------------------------------------------- | ------------------------------------------ |
+| model      | JSON、XML、HTML数据等                             | 数据库、文件等                             |
+| view       | 模板引擎、模板片段等                              | HTML模板                                   |
+| controller | JS业务逻辑、HTTP请求交互（Ajax, JSONP, Websocket) | HTTP请求路由、搜索引擎、数据分析、文件服务 |
+
+前端MVC需要向服务器端传递和接收的数据量都少很多，前端要做的等待和渲染工作也少很多，这意味着更好、更快的用户体验和更低的服务器端负载
 
 ## Flask项目结构
+
+## Flask
+
+>Flask适合开发者用最快的速度做一个简单的，Python做后端的网站。
+>
+>它适合一些一次性的工具，或者一些基于 现有API的简单web应用。
+>
+>需要实现一个简单的Web接口时，Flask可以开发的很快。例如想要将Python开发的深度学习算法对外开放Web api，使用Flask会比较方便。
 
 Flask项目较为灵活，没有固定的目录结构，实际上使用Flask在单文件中即可实现简单的Web接口，但是对于开发一个较为复杂的项目，将全部代码写在一个文件中是不现实的，所以需要有一定的文件结构。
 
@@ -283,6 +315,16 @@ class Publish(db.Model):
         }
 ```
 
+#### 命令
+
+```bash
+python manage.py db init    # 初始化 生成migrations文件夹 第一次创建表的时候运行
+python manage.py db migrate # 生成迁移文件
+python manage.py db upgrade # 执行迁移
+python manage.py downgrade  # 回退操作
+python manage.py # 运行项目
+```
+
 ### 按照功能模块
 
 对于功能模块较多的项目，可以根据功能模块分开，每个功能模块一个包
@@ -312,18 +354,16 @@ myapp
 |  |  |  __init__.py
 ```
 
-
-
 ### cookiecutter
 
 可以使用```cookiecutter-flask-api```模板创建基于Flask的RESTful api项目
 
 > ```bash
-> pip install cookiecutter
-> https://github.com/karec/cookiecutter-flask-restful
+> pip install cookiecutter # 安装
+> cookiecutter https://github.com/karec/cookiecutter-flask-restful # 创建项目
 > ```
 >
-> 文档：
+> 地址：
 >
 > https://github.com/karec/cookiecutter-flask-restful
 
@@ -354,46 +394,46 @@ JWT(json web token)是一种token规范，包含header, payload, signature三个
 flask
 
  ```python
- from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
  ```
 
 配置过期时间和密钥，为保证安全，可以定期更新密钥
 
  ```python
- app = Flask(__name__)
- app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
- app.config['JWT_SECRET_KEY'] = 'secret-key'
- jwt = JWTManager(app)
+app = Flask(__name__)
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = 3600
+app.config['JWT_SECRET_KEY'] = 'secret-key'
+jwt = JWTManager(app)
  ```
 
 获取token
 
  ```python
- @app.route('/login')
- def user_login():
- user = {
-   'uid': 1234,
-   'username': 'nnnn',
-   'phone': '10001'}
- # 假设user是一个用户类的实例
- t = create_access_token(identity=user)
- return jsonify({'token': t})
+@app.route('/login')
+def user_login():
+    user = {
+        'uid': 1234,
+        'username': 'nnnn',
+        'phone': '10001'}
+    # 假设user是一个用户类的实例
+    t = create_access_token(identity=user)
+    return jsonify({'token': t})
  ```
 
-> 使用token
->
-> ```python
-> @app.route('/token-test')
-> @jwt_required
-> def token_test():
-> # 获取当前用户
-> user = get_jwt_identity()
-> print(user.get('uid'), user.get('username'), user.get('phone'))
-> 
-> # 更新token
-> token = create_access_token(user)
-> return jsonify({'token': token}), 200
-> ```
+使用token
+
+```python
+@app.route('/token-test')
+@jwt_required
+def token_test():
+    # 获取当前用户
+    user = get_jwt_identity()
+    print(user.get('uid'), user.get('username'), user.get('phone'))
+
+    # 更新token
+    token = create_access_token(user)
+    return jsonify({'token': token}), 200
+```
 
 #### 项目配置
 
@@ -421,6 +461,16 @@ jwt.init_app(app)
 
 > [Flask-Login — Flask-Login 0.4.1 documentation](https://flask-login.readthedocs.io/en/latest/#your-user-class)
 
+Flask-Login为Flask提供用户会话管理。它处理登录、注销和长时间记住用户会话的常见任务。
+
+- 通过在会话中存储活动用户的Id来实现登录或者注销功能
+
+- 可以限制某些接口为登录后才能访问
+
+- 可以实现记住用户的功能。
+
+- 帮助保护用户会话不被窃取。
+
 ```myapp/extensions.py```中添加配置
 
 ```python
@@ -429,9 +479,9 @@ login_manager = LoginManager()
 
 ```python
 def config_extensions(app):
-    ...
+    # ...
     login_manager.init_app(app)
-    ...
+    # ...
 ```
 
 #### login_required
@@ -460,7 +510,7 @@ def load_user(userId):
     return Authors.query.filter_by(id=userId).first()
 
 
-@login.route('/login', methods=['GET', 'POST'])
+@login.route('/login', methods=['GET'])
 def author_login():
     user_email = request.args.get('email')
     password_hash = request.args.get('password')
