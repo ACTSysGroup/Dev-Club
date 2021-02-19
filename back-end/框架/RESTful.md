@@ -86,13 +86,13 @@ GET http://localhost:5000/getUserData?uid=1234
 RESTful风格
 
  ```http
- GET http://localhost:5000/users/1234
+GET http://localhost:5000/users/1234
  ```
 
 如果两个资源类型属于从属关系，在url中传值，例如某个id为````1234````的用户 发表的某一篇id为```0001```的文章：
 
  ```http
- GET http://localhost:5000/users/1234/articles/0001
+GET http://localhost:5000/users/1234/articles/0001
  ```
 
 接收：
@@ -106,7 +106,7 @@ RESTful风格
 如果两个资源类型属于平行关系，或者说属于检索过滤的操作，使用params传参，例如某个id为```1234```的用户发表的标题为 ```t```，年份为```y```的文章：
 
  ```http
-    GET http://localhost:5000/users/1234/articles?title=t&year=y
+GET http://localhost:5000/users/1234/articles?title=t&year=y
  ```
 
 接收：
