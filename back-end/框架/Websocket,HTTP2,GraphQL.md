@@ -1,6 +1,6 @@
 # Websocket
 
-GET、POST等请求，只能由客户端发起服务端回应，想要实现数据的实时更新，只能通过轮询、长轮询等技术
+GET、POST等请求，只能由客户端发起服务端回应，想要用请求实现数据的实时更新，只能通过轮询、长轮询等技术
 
  - 轮询：客户端每隔固定的时间发送一次请求
 
@@ -11,6 +11,44 @@ GET、POST等请求，只能由客户端发起服务端回应，想要实现数�
  - Websocket：支持长连接，经过一次握手建立连接，可以由服务端主动推送消息给客户端，实现低延时的双向通信
 
  网络环境不好的话会造成不断的重连
+
+---
+
+**HTTP**
+
+HTTP的生命周期通过Request来界定，也就是一个Request 一个Response，那么在HTTP/1.0中，这次HTTP请求就结束了
+
+在HTTP/1.1中进行了改进，使得有一个keep-alive，也就是说，在一个HTTP连接中，可以发送多个Request，接收多个Response。
+
+HTTP协议是被动的，不能主动发起
+
+---
+
+**Websocket**
+
+Websocket是基于HTTP协议实现的，通过借用HTTP的协议来完成一部分握手
+
+在握手阶段，Websocket握手请求会多出请求头
+
+```
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Key: x3JJHMbDL1EzLkh9GBhXDw==
+Sec-WebSocket-Protocol: chat
+Sec-WebSocket-Version: 13
+```
+
+表明发起的是Websocket握手请求而不是普通的HTTP请求
+
+``Sec-WebSocket-Key``是客户端随机生成的一个Base64值，用来验证服务端识别的是否是Websocket协议
+
+``Sec-WebSocket-Protocol``用来区分同一协议下不同服务需要的协议
+
+``Sec-WebSocket-Version``注明协议版本
+
+服务端会返回``Switching Protocols``表示收到请求，成功建立连接
+
+
 
 ## Flask-Sockets
 
@@ -74,11 +112,17 @@ websocketonmessage(response){ //数据接收
 
 ## Flask-SocketIO
 
- flask-socketio包封装了flask对websocket的支持，兼容性好，可以结合flask的接口
+> socket.io是基于websocket协议的一套成熟的解决方案
+>
+> SocketIO将WebSocket、AJAX和其它的通信方式全部封装成了统一的通信接口，兼容性较好，在使用socketIO时底层会自动选用最佳的通信方式，WebSocket是SocketIO的一个子集
+>
+> 需要注意：SocketIO传输的数据并不完全遵循Websocket协议，后端使用SocketIO协议不能兼容前端的Websocket协议，这就要求客户端和服务端都必须使用socketIO解决方案
 
- flask-socketio文档：[Welcome to Flask-SocketIO’s documentation! — Flask-SocketIO documentation](https://flask-socketio.readthedocs.io/en/latest/)
+flask-socketio包封装了flask对socketio的支持，可以配合js端的socket.io实现前后端交互方案
 
- JavaScript socket.io文档：[The Socket instance (client-side) | Socket.IO](https://socket.io/docs/v3/client-socket-instance/)
+flask-socketio文档：[Welcome to Flask-SocketIO’s documentation! — Flask-SocketIO documentation](https://flask-socketio.readthedocs.io/en/latest/)
+
+JavaScript socket.io文档：[The Socket instance (client-side) | Socket.IO](https://socket.io/docs/v3/client-socket-instance/)
 
 ## 版本匹配
 
@@ -191,7 +235,7 @@ JavaScript :
 this.socket.send('message');
 ```
 
-???
+json
 
 ```js
 this.socket.send({"message": 123});
