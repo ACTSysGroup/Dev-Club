@@ -684,7 +684,7 @@ class Query(ObjectType):
 
 输入
 
-```json
+```
 {
   authors(id: 1) {
     name
@@ -716,7 +716,7 @@ class Query(ObjectType):
 
 输入
 
-```json
+```
 {
   authorArticles(id: 2){
     authors{
@@ -783,7 +783,7 @@ class Query(ObjectType):
 
 输入
 
-```json
+```
 {
   authors(id: 1){
     name
@@ -817,7 +817,7 @@ class Query(ObjectType):
 
 输入
 
-```json
+```
 {
   user:authors(id: 1){
     id:name
@@ -847,7 +847,7 @@ class Query(ObjectType):
 
 query: 
 
-```json
+```
 query Author($id: Int, $b: Boolean!){
   authors(id: $id){
     name
@@ -918,7 +918,7 @@ class Mutation(ObjectType):
 
 输入
 
-```json
+```
 mutation addArticle($title: String, $year: Int){
   addArticle(title: $title, year: $year){
     title,
