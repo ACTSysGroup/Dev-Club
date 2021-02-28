@@ -55,6 +55,104 @@
 
 <img src="./images/nsq.PNG" alt="nsq" style="zoom:50%;" />
 
+参考：https://www.liwenzhou.com/posts/Go/go_nsq/
+
+#### 常用的命令行参数
+
+```
+-auth-http-address value
+    <addr>:<port> to query auth server (may be given multiple times)
+    身份验证服务器的地址
+-broadcast-address string
+    address that will be registered with lookupd (defaults to the OS hostname) (default "yourhost.local")
+    在lookupd中注册的地址
+-broadcast-http-port int
+    HTTP port that will be registered with lookupd (defaults to the HTTP port that this nsqd is listening to)
+    在lookupd中注册的HTTP端口号，默认是当前nsqd监听的HTTP端口号
+-broadcast-tcp-port int
+    TCP port that will be registered with lookupd (defaults to the TCP port that this nsqd is listening to)
+    在lookupd中注册的TCP端口号，默认是当前nsqd监听的TCP端口号
+-config string
+    path to config file
+    配置文件的路径
+-data-path string
+    path to store disk-backed messages
+    消息持久化的文件路径
+-http-address string
+    <addr>:<port> to listen on for HTTP clients (default "0.0.0.0:4151")
+    当前nsqd监听的HTTP地址，客户端可以发送HTTP请求
+-http-client-connect-timeout duration
+    timeout for HTTP connect (default 2s)
+    HTTP连接超时时间
+-http-client-request-timeout duration
+    timeout for HTTP request (default 5s)
+    HTTP请求超时时间
+-https-address string
+    <addr>:<port> to listen on for HTTPS clients (default "0.0.0.0:4152")
+    当前nsqd监听的HTTPS地址，客户端可以发送HTTPS请求
+-log-level value
+    set log verbosity: debug, info, warn, error, or fatal (default INFO)
+    设置日志的详细程度
+-log-prefix string
+    log message prefix (default "[nsqd] ")
+    设置日志消息的前缀
+-lookupd-tcp-address value
+    lookupd TCP address (may be given multiple times)
+    集群的lookupd的TCP地址
+-max-body-size int
+    maximum size of a single command body (default 5242880)
+    单个指令主体的最大长度
+-max-bytes-per-file int
+    number of bytes per diskqueue file before rolling (default 104857600)
+    回滚前，每个持久化的队列文件的最大字节数
+-max-channel-consumers int
+    maximum channel consumer connection count per nsqd instance (default 0, i.e., unlimited)
+    连接到每个nsqd的消费者的最大数量
+-max-msg-size int
+    maximum size of a single message in bytes (default 1048576)
+    单个消息的最大字节数
+-max-msg-timeout duration
+    maximum duration before a message will timeout (default 15m0s)
+-mem-queue-size int
+    number of messages to keep in memory (per topic/channel) (default 10000)
+    每个channel中保存在内存中的最大消息数量
+-node-id int
+    unique part for message IDs, (int) in range [0,1024) (default is hash of hostname) (default 248)
+    当前节点的id，用于消息id的唯一部分
+-tcp-address string
+    <addr>:<port> to listen on for TCP clients (default "0.0.0.0:4150")
+    客户端连接的TCP地址
+```
+
+
+
+#### HTTP API
+
+| 请求                                     | 作用                                                |
+| ---------------------------------------- | --------------------------------------------------- |
+| `POST` `/pub` | 发布消息 |
+| `POST` `/mpub` | 一次发送多个消息 |
+| `POST` `/topic/create` | 创建一个topic |
+| `POST` `/channel/delete` | 从现有topic上删除一个channel |
+| `POST` `/channel/empty` | 清空现有channel的所有消息（内存和磁盘中） |
+| `POST` `/topic/pause` | 暂停当前所有topic的channels的消息流（消息将在主题处排队） |
+| `POST` `/topic/unpause` | 将消息流恢复到已暂停的现有topic的channels |
+| `POST` `/channel/pause` | 暂停到现有channel使用者的消息流（消息将在channel处排队） |
+| `POST` `/channel/unpause` | 将消息流恢复到现有已暂停channel的使用者，Params中写明topic和channel |
+| `GET` `/stats` | 返回统计信息，topic和channel |
+| `GET` `/ping`                            | 检测节点状态，正常返回200，不正常返回500            |
+| `GET` `/info`                            | 返回版本信息                                        |
+| `GET` `/debug/pprof`                     | 调试页面                                            |
+| `GET` `/debug/pprof/profile`             | 启动CPU配置文件30秒并返回输出                       |
+| `GET` `/debug/pprof/goroutine`           | 返回所有正在运行的Go协程的堆栈跟踪                  |
+| `GET` `/debug/pprof/heap`                | 返回堆和配置文件                                    |
+| `GET` `/debug/pprof/block`               | 返回Go协程阻塞配置文件                              |
+| `GET` `/debug/pprof/threadcreate`        | 返回创建系统线程的Go协程的堆栈跟踪                  |
+| `GET` `/config/nsqlookupd_tcp_addresses` | 返回nsqlookupd管理的集群节点的TCP地址               |
+| `PUT` `/config/nsqlookupd_tcp_addresses` | 更新nsqlookupd的TCP地址，消息体中使用列表表示地址。 |
+
+
+
 ### nsqlookupd
 
 > nsqlookupd是管理拓扑信息的守护进程，客户端可以通过查询nsqlookupd来查找某个topic的生产者，节点广播和channel等信息。
