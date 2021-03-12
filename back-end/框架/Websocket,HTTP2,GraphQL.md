@@ -358,7 +358,7 @@ def handle_json(json):
  ```python
  @socketio.on('chatting', namespace='/chat')
  def handle_response(msg):
-     send('broadcast message!')
+     send('broadcast message!', broadcast=True)
  ```
 
  使用多个客户端连接/chat命名空间，其中一个发送一条事件名为chatting的消息，所有的客户端都会收到广播消息
