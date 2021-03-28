@@ -43,7 +43,6 @@ string 类型是二进制安全的，因此可以存储任何数据，一条数�
 ```python
 import redis
 r = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
-r.delete('k')
 r.set('k', 'string value')
 print(r.get('k'))
 ```
