@@ -1,0 +1,11 @@
+{
+"namespace":"act.realtime",
+"type":"record",
+"name":"HangQing",
+"fields":[
+{"name":"LocalTimeStamp", "type":"int"},
+{"name":"Time", "type":["long","null"]},
+{"name":"Symbol", "type":"string"},
+{"name":"ClosePrice", "type":["double", "null"]}
+]
+}
