@@ -1,0 +1,42 @@
+\documentclass{beamer}
+\usetheme{metropolis}
+
+
+\title{DevClub: Cloud Native Infrastructure: Container in Deatil}
+\date{\today}
+
+\title{Cloud Native Introduction: Docker and K8s}
+
+\begin{document}
+    \maketitle
+    \begin{frame}{Docker In Detail}
+        \begin{itemize}
+
+            \item Container
+            \begin{itemize}
+                \item Infrastructure of Isolation: Namespace 
+                \item Resource Limit: CGroup
+                \item Image System:  OverlayFS
+                \item Docker Container Network
+                \item GPU Support: Nvidia Container Runtime(NVCR)
+                \item[$\square$] Practice: Container without Docker
+                \item[$\square$] Real Case: Uasge in PTM LeaderBoard
+            \end{itemize}
+
+            \item Orchestration ()
+            \begin{itemize}
+                \item Workload Resources - beyond the single container
+                \item Network - how to expose service
+                \item Storage - model and taxonomy
+                \item[$\square$] Practice: deploy a simple service
+            \end{itemize}
+
+        \end{itemize}
+    \end{frame}
+    \input{content/namespace.tex}
+    \input{content/cgroup.tex}
+    \input{content/overlayfs.tex}
+    \input{content/network.tex}
+    \input{content/gpu.tex}
+
+\end{document}

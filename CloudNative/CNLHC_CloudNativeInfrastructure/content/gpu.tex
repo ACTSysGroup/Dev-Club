@@ -1,0 +1,30 @@
+\begin{frame}{GPU Support: Nvidia Container Runtime(NVCR)}
+    \begin{columns}
+        \begin{column}{0.7\textwidth}
+            \begin{figure}
+                \includegraphics[width=1\textwidth]{assets/dgx-docker-1024x970.png}
+                \caption{Nvidia-Docker diagram}
+            \end{figure}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \pause
+            nvidia docker is composed with 
+            \begin{itemize}
+                \item nvidia-docker 
+                \item nvidia-container-runtime
+                \item libnvidia-container
+            \end{itemize}
+
+            \pause
+            Those three components are equivalent to
+
+            \begin{itemize}
+                \item docker
+                \item runC
+                \item libcontainer
+            \end{itemize}
+
+
+        \end{column}
+    \end{columns}
+\end{frame}

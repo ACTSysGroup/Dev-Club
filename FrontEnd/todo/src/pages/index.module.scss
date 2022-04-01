@@ -1,0 +1,17 @@
+.done{
+    color: green;
+}
+.unfinished {
+    color: red;
+}
+
+.item{
+    position: relative;
+    .action{
+        display: inline-block;
+        @media screen and (max-width: 455px){
+            display: block;
+        }
+    }
+
+}
