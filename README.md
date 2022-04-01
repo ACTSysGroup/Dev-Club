@@ -18,6 +18,6 @@ Dev Club 是北航计算机学院ACT实验室内的一个兴趣小组，我们�
 
 # 20210326 - 消息队列和订阅发布
 
-- @13ye(李璠嘉):
+- @13ye(李璠嘉): Kafka演示 [repo](MessageSystem/kafka_demo)
 - @CNLHC(刘瀚骋): 消息传递系统 [slides](MessageSystem/CNLHC_MessagePassingSystem/DevClub-20200326.pdf)
 - @lbaf23(李珂凡):
